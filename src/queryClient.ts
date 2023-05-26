@@ -32,6 +32,7 @@ import {
 const BASE_URL = 'https://fakestoreapi.com'
 
 //API를 요청하는 fetcher
+//
 export const fetcher = async ({
     method,
     path,
@@ -44,6 +45,7 @@ export const fetcher = async ({
     params? : AnyOBJ
 })=>{
     try{
+        //요청하는 클라이언트에서 받아온 path로 기본서버주소 baseURL과 합쳐서 정의한다.
         const url = `${BASE_URL}${path}`;
         //RequestInit은 fetchRequest용으로 노드에서 제공해서 따로 타입을 만든게 아니다.
         const fetchOptions : RequestInit = {
@@ -60,7 +62,8 @@ export const fetcher = async ({
         console.log(err);
     }
 }
-
+//요청할 데이터를 구분하는 key
+//useQuery를 하려면 Querykey와 fechert함수가 필요하다.
 export const QueryKeys ={
     PRODUCTS : ['PRODUCTS'],
 }

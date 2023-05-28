@@ -9,6 +9,8 @@ import { getClient } from './queryClient.ts';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import './scss/index.scss'
+import { Gnb } from './components/gnb.tsx';
+
 
 const queryClient = getClient()
 
@@ -16,28 +18,33 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App/>,
-    
-  },
-  {
-    path: "/pages",
-    element: <Mainpage/>
-  },
-  {
-    path: "/products",
-    element: <Productlist />,
-    
-  },
-  {
-    path: "/products/:id",
-    element: <ProductDetail />
-  },
+    children :[
+      {
+        path: "/pages",
+        element: <Mainpage/>,
+        index: true
+      },
+      {
+        path: "/products",
+        element: <Productlist />,
+        index: true
+        
+      },
+      {
+        path: "/products/:id",
+        element: <ProductDetail />,
+        index: true
+      },
+    ]
+  }
+      
   
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} /> 
+            <RouterProvider router={router} />
             <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>,

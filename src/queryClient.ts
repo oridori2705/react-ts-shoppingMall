@@ -21,8 +21,23 @@ import {
   export const getClient =(()=> {
     let client : QueryClient | null =null;
     return () =>{
+        //react-Query에서 옵션을 줘야한다. (캐시정책) -쓸데없는 요청들은 없앤 것
+        // cacheTime : 1000 * 60 * 60 * 24 -> 1일 ->기본값은 5분으로, unused / inactive 캐시 데이터를 메모리에서 유지시킬 시간,cacheTime이 지나기 전에 쿼리 인스턴스가 다시 마운트 되면, 데이터를 fetch하는 동안 캐시 데이터를 보여준다.
+        // staleTime : 1000  * 60 -> 1분 -> 데이터가 한번 fetch 되고 나서 staleTime이 지나지 않았다면 unmount 후 mount 되어도 fetch가 일어나지 않는다.-> 캐시를 이용해서 페이지를 이동했다가 다시 되돌아올 때 재요청을 안한다.
+        // refetchOnMount : false, //쿼리의 새 인스턴스가 마운트 될 때 (refetchOnMount),mount되었을 때 refetch 여부를 결정한다. true라면 stale 상태일 때 refetch 합니다
+        // refetchOnReconnect : false, //네트워크가 끊어졌다가 다시 연결될 때 (refetchOnReconnect)
+        // refetchOnWindowFocus : false -> // react-query는 사용자가 사용하는 윈도우가 다른 곳을 갔다가 다시 화면으로 돌아오면 이 함수를 재실행합니다. 윈도우가 다시 포커스되었을 때 데이터를 호출할 것인지 여부입니다
         if(!client) client = new QueryClient({
+            defaultOptions :{
+                queries: {
+                    cacheTime : 1000 * 60 * 60 * 24,
+                    staleTime : 1000  * 60,
+                    refetchOnMount : false,
+                    refetchOnReconnect : false,
+                    refetchOnWindowFocus : false
+                }
 
+            }
         })
         return client;
     }
@@ -46,7 +61,7 @@ export const fetcher = async ({
 })=>{
     try{
         //요청하는 클라이언트에서 받아온 path로 기본서버주소 baseURL과 합쳐서 정의한다.
-        const url = `${BASE_URL}${path}`;
+        let url = `${BASE_URL}${path}`;
         //RequestInit은 fetchRequest용으로 노드에서 제공해서 따로 타입을 만든게 아니다.
         const fetchOptions : RequestInit = {
             method,
@@ -55,6 +70,14 @@ export const fetcher = async ({
                 'Access-Control-Allow-Origin' : BASE_URL
             }
         }
+        if(params){
+            const searchParams = new URLSearchParams(params);
+            url += '?' + searchParams.toString();
+            console.log(url);
+        }
+        
+        if(body) fetchOptions.body = JSON.stringify(body);
+        
         const res=await fetch(url,fetchOptions); //method와 path 값을 받아서 url을 만든다. HTML5의 fetch를 사용할 수 있게끔
         const json = await res.json();
         return json;

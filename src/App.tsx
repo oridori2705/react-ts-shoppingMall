@@ -1,4 +1,5 @@
 
+import { Outlet } from "react-router-dom";
 import { Gnb } from "./components/gnb";
 
 const App = () => {
@@ -6,6 +7,7 @@ const App = () => {
     return (
         <div>
             <Gnb/>
+            <Outlet />
         </div>
     )
 }

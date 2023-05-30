@@ -5,6 +5,7 @@ import {
     QueryClient,
     QueryClientProvider,
   } from '@tanstack/react-query'
+import {RequestDocument, request} from 'graphql-request';
   //import { getTodos, postTodo } from '../my-api'
   
   //POST나 PUT 같은 경우는 body가 필요하므로
@@ -46,47 +47,52 @@ import {
 
 const BASE_URL = 'https://fakestoreapi.com'
 
-//API를 요청하는 fetcher
-//
-export const fetcher = async ({
-    method,
-    path,
-    body,
-    params
-}:{
-    method : 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
-    path : string,
-    body? : AnyOBJ
-    params? : AnyOBJ
-})=>{
-    try{
-        //요청하는 클라이언트에서 받아온 path로 기본서버주소 baseURL과 합쳐서 정의한다.
-        let url = `${BASE_URL}${path}`;
-        //RequestInit은 fetchRequest용으로 노드에서 제공해서 따로 타입을 만든게 아니다.
-        const fetchOptions : RequestInit = {
-            method,
-            headers : {
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin' : BASE_URL
-            }
-        }
-        if(params){
-            const searchParams = new URLSearchParams(params);
-            url += '?' + searchParams.toString();
-            console.log(url);
-        }
+//API를 요청하는 fetcher -> fake API는 MSW사용 이후로 안씀 
+// export const restFetcher = async ({
+//     method,
+//     path,
+//     body,
+//     params
+// }:{
+//     method : 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+//     path : string,
+//     body? : AnyOBJ
+//     params? : AnyOBJ
+// })=>{
+//     try{
+//         //요청하는 클라이언트에서 받아온 path로 기본서버주소 baseURL과 합쳐서 정의한다.
+//         let url = `${BASE_URL}${path}`;
+//         //RequestInit은 fetchRequest용으로 노드에서 제공해서 따로 타입을 만든게 아니다.
+//         const fetchOptions : RequestInit = {
+//             method,
+//             headers : {
+//                 'Content-Type':'application/json',
+//                 'Access-Control-Allow-Origin' : BASE_URL
+//             }
+//         }
+//         if(params){
+//             const searchParams = new URLSearchParams(params);
+//             url += '?' + searchParams.toString();
+//             console.log(url);
+//         }
         
-        if(body) fetchOptions.body = JSON.stringify(body);
+//         if(body) fetchOptions.body = JSON.stringify(body);
         
-        const res=await fetch(url,fetchOptions); //method와 path 값을 받아서 url을 만든다. HTML5의 fetch를 사용할 수 있게끔
-        const json = await res.json();
-        return json;
-    }catch(err){
-        console.log(err);
-    }
-}
+//         const res=await fetch(url,fetchOptions); //method와 path 값을 받아서 url을 만든다. HTML5의 fetch를 사용할 수 있게끔
+//         const json = await res.json();
+//         return json;
+//     }catch(err){
+//         console.log(err);
+//     }
+// }
+
+//react-query버전 업데이트에 따라서 <T>를 넣어주고 fetcher부분에도 타입을 지정해줘야한다.
+export const graphqlFetcher = <T>(query: RequestDocument, variables = {}) =>
+  request<T>(BASE_URL, query, variables)
+
+
 //요청할 데이터를 구분하는 key
 //useQuery를 하려면 Querykey와 fechert함수가 필요하다.
 export const QueryKeys ={
-    PRODUCTS : ['PRODUCTS'],
+    PRODUCTS : 'PRODUCTS',
 }

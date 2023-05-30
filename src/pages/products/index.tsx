@@ -1,20 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
-import { QueryKeys, fetcher } from "../../queryClient"
+import { QueryKeys, graphqlFetcher } from "../../queryClient"
 import { Productitem } from "../../components/product/item"
+import {GET_PRODUCTS,Products} from '../../graphql/produts'
 
 
 const Productlist =() =>{
     //useQuery로 데이터 요청
-    const {data} = useQuery<Product[]>(QueryKeys.PRODUCTS, ()=>fetcher({
-        method: "GET",
-        path: "/products"
-    }))
+    const { data } = useQuery<Products>([QueryKeys.PRODUCTS], 
+        () =>graphqlFetcher<Products>(GET_PRODUCTS));
     console.log(data);
     return (
         <div>
-            asdassafas
+            
             <ul className="products">
-                {data?.map((product)=>(
+                {data?.products?.map((product)=>(
                     <Productitem {...product} key={product.id} />
                 ))}
             </ul>

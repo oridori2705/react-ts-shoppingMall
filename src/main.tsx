@@ -9,8 +9,8 @@ import { getClient } from './queryClient.ts';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import './scss/index.scss'
-import { Gnb } from './components/gnb.tsx';
 
+import { worker } from './mocks/browser'; //공식사이트는 변수선언인데 일단 import로 바꿔줌
 
 const queryClient = getClient()
 
@@ -45,6 +45,11 @@ const router = createBrowserRouter([
       
   
 ]);
+//원래 process.env.NODE_ENV === 'development' 로 써져있었는데 
+//vite에서는 좀 달라서 바꿔줌
+if (import.meta.env.DEV) {
+  worker.start()
+}
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom"
 import { Product} from "../../graphql/produts"
+import { useRecoilState } from "recoil";
+import { cartItemSelector } from "../../recoils/cart";
 
 export const Productitem = ({
     id,
@@ -9,6 +11,9 @@ export const Productitem = ({
     imageUrl,
     createdAt
 }: Product) => {
+  const [cartAmount,setCartAmount] =useRecoilState(cartItemSelector(id));
+  const addToCart = () => setCartAmount(prev => (prev || 0 ) +1 );
+
   return (
     <div>
         <li className='product-item'>
@@ -21,6 +26,8 @@ export const Productitem = ({
             <p className='product-item__title'>{createdAt}</p>
           </Link>
         </li>
+        <button onClick={addToCart}>담기</button>
+        <span>{cartAmount || 0 }</span>
     </div>
   )
 }

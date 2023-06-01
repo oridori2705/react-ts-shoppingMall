@@ -4,7 +4,7 @@ import { Productitem } from "../../components/product/item"
 import {GET_PRODUCTS,Products} from '../../graphql/produts'
 
 
-const Productlist =() =>{
+export const Productlist =() =>{
     //useQuery로 데이터 요청
     //현재 리액트쿼리버전업데이트로 타입스크립트 정의방식이 바뀌었다. graphqlFetcher에도 타입을 지정해줘야한다.
     const { data } = useQuery<Products>([QueryKeys.PRODUCTS], 
@@ -22,4 +22,7 @@ const Productlist =() =>{
     )
 } 
 
-export default Productlist
+
+
+
+

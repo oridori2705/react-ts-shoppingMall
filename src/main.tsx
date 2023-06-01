@@ -4,13 +4,15 @@ import App from './App.tsx'
 import {createBrowserRouter,RouterProvider,} from "react-router-dom";
 import Mainpage from './pages/index.tsx';
 import ProductDetail from './pages/products/[id].tsx';
-import Productlist from './pages/products/index.tsx';
 import { getClient } from './queryClient.ts';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import './scss/index.scss'
-
 import { worker } from './mocks/browser'; //공식사이트는 변수선언인데 일단 import로 바꿔줌
+import { Productlist } from './pages/products/index.tsx';
+import {
+  RecoilRoot
+} from 'recoil';
 
 const queryClient = getClient()
 
@@ -53,9 +55,11 @@ if (import.meta.env.DEV) {
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
-            <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+              <RouterProvider router={router} />
+              <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </RecoilRoot>
   </React.StrictMode>,
 )
